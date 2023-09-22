@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Jeevan.ObjectDumper</name>
+    </assembly>
+    <members>
+        <member name="T:Jeevan.ObjectDumper.DumpBuilder">
+            <summary>
+                Main workhorse class that creates the full dump from the instance.
+            </summary>
+        </member>
+        <member name="M:Jeevan.ObjectDumper.TypeExtensions.IsValue(System.Type)">
+            <summary>
+                Returns whether this type has a value and we don't need to drill into it further.
+                <br/>
+                This includes:<br/>
+                o Built-in primitive types like int, double, char, etc. (Type.IsPrimitive == true)<br/>
+                o Enums<br/>
+                o Strings<br/>
+                o Any type that implements <see cref="T:System.IFormattable"/>. This will cover most non-built-in
+                    primitive types like <see cref="T:System.Guid"/>, <see cref="T:System.DateTime"/>, etc.
+            </summary>
+        </member>
+    </members>
+</doc>

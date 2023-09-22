@@ -1,0 +1,10 @@
+<Project>
+
+    <PropertyGroup>
+        <BaseNamespace>Jeevan.ObjectDumper</BaseNamespace>
+        <Product>Object Dumper</Product>
+        <RepositoryName>ObjectDumper</RepositoryName>
+        <CopyrightYears>2023</CopyrightYears>
+    </PropertyGroup>
+
+</Project>

@@ -1,0 +1,45 @@
+<Project>
+
+    <Import Project="Project.props" />
+
+    <PropertyGroup Label="Build">
+        <LangVersion>latest</LangVersion>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+        <WarningsAsErrors />
+        <NoWarn>1701;1702;1591;NU5104;NU5105</NoWarn>
+    </PropertyGroup>
+
+    <PropertyGroup Label="Package">
+        <Authors>Jeevan James</Authors>
+        <Company>Jeevan James</Company>
+        <Product>Object Dumper</Product>
+        <Copyright>Copyright (c) $(CopyrightYears) Jeevan James</Copyright>
+        <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageProjectUrl>https://github.com/JeevanJames/ObjectDumper</PackageProjectUrl>
+        <PackageIcon>Icon.png</PackageIcon>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <RepositoryUrl>https://github.com/JeevanJames/ObjectDumper.git</RepositoryUrl>
+        <RepositoryType>Git</RepositoryType>
+        <PackageTags>ObjectDumper</PackageTags>
+        <NeutralLanguage>en-US</NeutralLanguage>
+    </PropertyGroup>
+
+    <PropertyGroup Label="Rules">
+        <CodeAnalysisRuleSet>$(MSBuildThisFileDirectory)shared/ObjectDumper.ruleset</CodeAnalysisRuleSet>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <AdditionalFiles Include="$(MSBuildThisFileDirectory)shared/stylecop.json" Link="Properties/stylecop.json" />
+    </ItemGroup>
+
+    <ItemGroup Label="Analyzer Package References">
+        <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="7.0.4" PrivateAssets="all"/>
+        <PackageReference Include="Roslynator.Analyzers" Version="4.5.0" PrivateAssets="all"/>
+        <PackageReference Include="SonarAnalyzer.CSharp" Version="9.10.0.77988" PrivateAssets="all"/>
+        <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.507" PrivateAssets="all"/>
+    </ItemGroup>
+
+</Project>
