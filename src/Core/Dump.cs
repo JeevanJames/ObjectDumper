@@ -15,6 +15,13 @@ public abstract class ContainerDump : Dump
 [DebuggerDisplay("Object - {Properties.Count} properties")]
 public sealed class ObjectDump : ContainerDump
 {
+    public ObjectDump(Type type)
+    {
+        Type = type;
+    }
+
+    public Type Type { get; }
+
     [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
     public IDictionary<string, Dump> Properties { get; } = new Dictionary<string, Dump>(StringComparer.Ordinal);
 }
@@ -34,6 +41,26 @@ public sealed class CollectionDump : ContainerDump
 
     [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
     public IList<Dump> Values { get; } = new List<Dump>();
+}
+
+[DebuggerDisplay("Dictionary<{KeyType.Name,nq}, {ValueType.Name,nq}> - {Values.Count} elements")]
+public sealed class DictionaryDump : ContainerDump
+{
+    internal DictionaryDump(Type keyType, Type valueType, Type dictionaryType)
+    {
+        KeyType = keyType;
+        ValueType = valueType;
+        DictionaryType = dictionaryType;
+    }
+
+    public Type KeyType { get; }
+
+    public Type ValueType { get; }
+
+    public Type DictionaryType { get; }
+
+    [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
+    public IDictionary<Dump, Dump> Values { get; } = new Dictionary<Dump, Dump>();
 }
 
 [DebuggerDisplay("Value: {Type.Name,nq} = {Value}")]
