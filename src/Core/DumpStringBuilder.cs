@@ -25,33 +25,11 @@ internal sealed class DumpStringBuilder
         switch (dump)
         {
             case ObjectDump od:
-                foreach ((string propertyName, Dump propertyDump) in od.Properties)
-                {
-                    Indent(level).Append(propertyName).Append(": ");
-                    if (propertyDump is ValueDump vd)
-                        _sb.AppendLine(GetValueString(vd));
-                    else
-                    {
-                        _sb.AppendLine();
-                        Build((ContainerDump)propertyDump, level + 1);
-                    }
-                }
-
+                BuildObject(od, level);
                 break;
 
             case CollectionDump cd:
-                for (int i = 0; i < cd.Values.Count; i++)
-                {
-                    Indent(level).Append('[').Append(i).Append("]: ");
-                    if (cd.Values[i] is ValueDump vd)
-                        _sb.AppendLine(GetValueString(vd));
-                    else
-                    {
-                        _sb.AppendLine();
-                        Build((ContainerDump)cd.Values[i], level + 1);
-                    }
-                }
-
+                BuildCollection(cd, level);
                 break;
 
             case DictionaryDump dd:
@@ -60,6 +38,36 @@ internal sealed class DumpStringBuilder
 
             default:
                 throw new NotSupportedException($"Unsupported container dump type {dump.GetType()}.");
+        }
+    }
+
+    private void BuildObject(ObjectDump od, int level)
+    {
+        foreach ((string propertyName, Dump propertyDump) in od.Properties)
+        {
+            Indent(level).Append(propertyName).Append(": ");
+            if (propertyDump is ValueDump vd)
+                _sb.AppendLine(GetValueString(vd));
+            else
+            {
+                _sb.AppendLine();
+                Build((ContainerDump)propertyDump, level + 1);
+            }
+        }
+    }
+
+    private void BuildCollection(CollectionDump cd, int level)
+    {
+        for (int i = 0; i < cd.Values.Count; i++)
+        {
+            Indent(level).Append('[').Append(i).Append("]: ");
+            if (cd.Values[i] is ValueDump vd)
+                _sb.AppendLine(GetValueString(vd));
+            else
+            {
+                _sb.AppendLine();
+                Build((ContainerDump)cd.Values[i], level + 1);
+            }
         }
     }
 
