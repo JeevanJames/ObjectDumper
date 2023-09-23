@@ -16,21 +16,28 @@ public sealed class DumperTests
 
     public ITestOutputHelper Output { get; }
 
-    [Fact]
-    public void PersonDumpTest()
+    [Theory]
+    [MemberData(nameof(GetDumpTestObjects))]
+    public void PersonDumpTest(object instance)
     {
-        Person john = Samples.John();
-        Dump dump = Dumper.Dump(john);
+        Dump dump = Dumper.Dump(instance);
         dump.ShouldNotBeNull();
     }
 
-    [Fact]
-    public void PersonStringDumpTest()
+    [Theory]
+    [MemberData(nameof(GetDumpTestObjects))]
+    public void StringDumpTests(object instance)
     {
-        Person john = Samples.John();
-        string dump = Dumper.DumpString(john);
-        dump.ShouldNotBeNull();
+        string dump = Dumper.DumpString(instance, b => b.IndentWith(2, '·'));
+        dump.ShouldNotBeNullOrWhiteSpace();
 
         Output.WriteLine(dump);
+    }
+
+    public static IEnumerable<object[]> GetDumpTestObjects()
+    {
+        yield return new object[] { Samples.John() };
+        yield return new object[] { Samples.PlaceDistances() };
+        yield return new object[] { Samples.DistanceConversions() };
     }
 }

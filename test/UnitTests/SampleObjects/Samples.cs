@@ -12,6 +12,7 @@ public static class Samples
         IsActive = true,
         Salary = 50000.50m,
         Breakup = new SalaryBreakup(40000m, 10000m),
+        DistanceToOffice = "3km",
         Scores = new Dictionary<string, int> { { "Math", 95 }, { "Science", 88 } },
         Spouse = Jane(),
     };
@@ -31,6 +32,21 @@ public static class Samples
         IsActive = false,
         Salary = 60000.75m,
         Breakup = new SalaryBreakup(45000m, 15000m),
+        DistanceToOffice = new Distance(4.8d, DistanceUnits.Kilometer),
         Scores = null, // Simulate a null property
+    };
+
+    public static IDictionary<Distance, string> PlaceDistances() => new Dictionary<Distance, string>
+    {
+        ["60km"] = "Nandi Hills",
+        ["150km"] = "Mysuru",
+        ["341 m"] = "Kottayam",
+    };
+
+    public static IDictionary<Distance, Distance> DistanceConversions() => new Dictionary<Distance, Distance>
+    {
+        ["60km"] = new(37.2822715d, DistanceUnits.Mile),
+        ["150km"] = new(93.2056788d, DistanceUnits.Mile),
+        ["550km"] = new(341.754156d, DistanceUnits.Mile),
     };
 }

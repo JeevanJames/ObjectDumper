@@ -1,17 +1,17 @@
-﻿using System.Reflection.Emit;
-using System.Text;
+﻿using System.Text;
 
 namespace Jeevan.ObjectDumper;
 
 internal sealed class DumpStringBuilder
 {
-    private const int _indent = 2;
     private readonly ContainerDump _dump;
+    private readonly StringDumpOptions _options;
     private readonly StringBuilder _sb = new();
 
-    internal DumpStringBuilder(ContainerDump dump)
+    internal DumpStringBuilder(ContainerDump dump, StringDumpOptions options)
     {
         _dump = dump;
+        _options = options;
     }
 
     internal string Build()
@@ -33,7 +33,7 @@ internal sealed class DumpStringBuilder
                     else
                     {
                         _sb.AppendLine();
-                        Build((ContainerDump)propertyDump, level + _indent);
+                        Build((ContainerDump)propertyDump, level + 1);
                     }
                 }
 
@@ -48,7 +48,7 @@ internal sealed class DumpStringBuilder
                     else
                     {
                         _sb.AppendLine();
-                        Build((ContainerDump)cd.Values[i], level + _indent);
+                        Build((ContainerDump)cd.Values[i], level + 1);
                     }
                 }
 
@@ -75,20 +75,20 @@ internal sealed class DumpStringBuilder
                 else
                 {
                     _sb.AppendLine();
-                    Build((ContainerDump)kvp.Value, level + _indent);
+                    Build((ContainerDump)kvp.Value, level + 1);
                 }
             }
             else
             {
-                Indent(level).AppendLine("Key:");
-                Build((ContainerDump)kvp.Key, level + _indent);
-                Indent(level).Append("Value: ");
+                Indent(level).AppendLine("[Key]:");
+                Build((ContainerDump)kvp.Key, level + 1);
+                Indent(level).Append("[Value]: ");
                 if (kvp.Value is ValueDump vvd)
                     _sb.AppendLine(GetValueString(vvd));
                 else
                 {
                     _sb.AppendLine();
-                    Build((ContainerDump)kvp.Value, level + _indent);
+                    Build((ContainerDump)kvp.Value, level + 1);
                 }
             }
         }
@@ -96,8 +96,8 @@ internal sealed class DumpStringBuilder
 
     private StringBuilder Indent(int level)
     {
-        for (int i = 0; i < level; i++)
-            _sb.Append('·');
+        for (int i = 0; i < level * _options.IndentSize; i++)
+            _sb.Append(_options.IndentChar);
         return _sb;
     }
 

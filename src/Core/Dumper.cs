@@ -15,16 +15,18 @@ public static class Dumper
         return builder.Build();
     }
 
-    public static string DumpString(object instance)
+    public static string DumpString(object instance, Action<StringDumpOptionsBuilder>? optionsBuilder = null)
     {
-        if (instance is null)
-            throw new ArgumentNullException(nameof(instance));
-
         Dump dump = Dump(instance);
+
         if (dump is ValueDump vd)
             return vd.Value is null ? "[NULL]" : vd.Value.ToString();
 
-        DumpStringBuilder builder = new((ContainerDump)dump);
+        StringDumpOptionsBuilder ob = new();
+        optionsBuilder?.Invoke(ob);
+        StringDumpOptions options = ob.Build();
+
+        DumpStringBuilder builder = new((ContainerDump)dump, options);
         return builder.Build();
     }
 }

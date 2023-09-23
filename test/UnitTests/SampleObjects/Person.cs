@@ -18,6 +18,8 @@ public class Person
 
     public SalaryBreakup Breakup { get; set; }
 
+    public Distance DistanceToOffice { get; set; }
+
     public Dictionary<string, int>? Scores { get; set; }
 
     public Person? Spouse { get; set; }
