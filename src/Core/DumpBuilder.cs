@@ -51,7 +51,7 @@ internal sealed class DumpBuilder
                 objectDump.Properties.Add(property.Name, new ValueDump(propertyType, null));
             else if (propertyType.IsValue())
                 objectDump.Properties.Add(property.Name, new ValueDump(propertyType, propertyValue));
-            else if (propertyType.IsEnumerable(out Type elementType))
+            else if (propertyType.IsCollection(out Type elementType))
             {
                 CollectionDump collectionDump = new(elementType, propertyType);
                 objectDump.Properties.Add(property.Name, collectionDump);
@@ -74,7 +74,7 @@ internal sealed class DumpBuilder
                 collectionDump.Values.Add(new ValueDump(collectionDump.ElementType, null));
             else if (element.GetType().IsValue())
                 collectionDump.Values.Add(new ValueDump(element.GetType(), element));
-            else if (element.GetType().IsEnumerable(out Type childElementType))
+            else if (element.GetType().IsCollection(out Type childElementType))
             {
                 CollectionDump childCollectionDump = new(childElementType, element.GetType());
                 collectionDump.Values.Add(childCollectionDump);

@@ -1,8 +1,10 @@
-﻿namespace Jeevan.ObjectDumper;
+﻿using System.Collections;
+
+namespace Jeevan.ObjectDumper;
 
 internal static class TypeExtensions
 {
-    internal static bool IsEnumerable(this Type type, out Type elementType)
+    internal static bool IsCollection(this Type type, out Type elementType)
     {
         // Exclude strings, as they are considered value types.
         if (type == typeof(string))
@@ -23,7 +25,7 @@ internal static class TypeExtensions
         }
 
         elementType = typeof(object);
-        return Array.Exists(intfTypes, t => typeof(IEnumerable<>).IsAssignableFrom(t));
+        return Array.Exists(intfTypes, t => typeof(IEnumerable).IsAssignableFrom(t));
     }
 
     /// <summary>
