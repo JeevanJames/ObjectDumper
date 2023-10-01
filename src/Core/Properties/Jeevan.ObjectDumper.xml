@@ -9,6 +9,34 @@
                 Main workhorse class that creates the full dump from the instance.
             </summary>
         </member>
+        <member name="M:Jeevan.ObjectDumper.TypeExtensions.IsCollection(System.Type,System.Type@)">
+            <summary>
+                Returns whether a type is a collection, i.e. it implements the <see cref="T:System.Collections.IEnumerable"/>
+                or <see cref="T:System.Collections.Generic.IEnumerable`1"/> interface.
+            </summary>
+            <param name="type">The type to check.</param>
+            <param name="elementType">The type of the collection element.</param>
+            <returns><c>True</c> if the type is a collection, otherwise <c>false</c>.</returns>
+        </member>
+        <member name="M:Jeevan.ObjectDumper.TypeExtensions.IsDictionary(System.Type,System.Type@,System.Type@)">
+            <summary>
+                Returns whether a type is a dictionary.
+            </summary>
+            <param name="type">The type to check.</param>
+            <param name="keyType">The type of the dictionary key.</param>
+            <param name="valueType">The type of the dictionary value.</param>
+            <returns><c>True</c> if the type is a dictionary, otherwise <c>false</c>.</returns>
+            <remarks>
+                Since <see cref="T:System.Collections.Generic.IDictionary`2"/> does not inherit from <see cref="T:System.Collections.IDictionary"/>,
+                the logic here is slightly different from the <see cref="M:Jeevan.ObjectDumper.TypeExtensions.IsCollection(System.Type,System.Type@)"/> method.
+                <br/>
+                The type is considered a dictionary if it implements the non-generic <see cref="T:System.Collections.IDictionary"/>
+                interface. However, we still want to check whether it implements the generic interface
+                so that we can properly assign the <paramref name="keyType"/> and <paramref name="valueType"/>
+                parameters. If the generic type is not implemented, then the key and value types are
+                <see cref="T:System.Object"/>.
+            </remarks>
+        </member>
         <member name="M:Jeevan.ObjectDumper.TypeExtensions.IsValue(System.Type)">
             <summary>
                 Returns whether this type has a value and we don't need to drill into it further.

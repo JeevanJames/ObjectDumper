@@ -30,9 +30,9 @@ internal sealed class DumpBuilder
         return _rootContainer;
     }
 
-    private void Build(object instance, ContainerDump node)
+    private void Build(object instance, ContainerDump dump)
     {
-        switch (node)
+        switch (dump)
         {
             case ObjectDump od:
                 BuildObjectDump(instance, od);
@@ -47,9 +47,24 @@ internal sealed class DumpBuilder
                 break;
 
             default:
-                throw new NotSupportedException($"Unsupported node type {node.GetType()}.");
+                throw new NotSupportedException($"Unsupported dump type {dump.GetType()}.");
         }
     }
+
+    // For all the BuildXXXXDump methods, we typically check the property, collection element or dictionary
+    // entry in the following order:
+    // ✅ Check if the value is null. If it is, dump it; we cannot continue recursing.
+    // ✅ Check if the value is a "value type", which means it cannot be recursed further. A value
+    //     type could be:
+    //     ☑ A built-in primitive type like bool, int, char, etc.
+    //     ☑ An enum
+    //     ☑ A string
+    //     ☑ Any type that implements IFormattable, which is typically implemented by custom primitives
+    //         like DateTime, Guid, Uri, etc.
+    // ✅ Check if the value is a dictionary. If it is, we recursively iterate over each of its entries.
+    // ✅ Check if the value is a collection. If it is, we recursively iterate over each element.
+    // ✅ Finally, if all other conditions fail, then we assume it's an object and iterate recursively
+    //     over each of its properties.
 
     private void BuildObjectDump(object instance, ObjectDump objectDump)
     {
@@ -67,9 +82,9 @@ internal sealed class DumpBuilder
             {
                 ContainerDump childDump;
                 if (propertyType.IsDictionary(out Type? keyType, out Type? valueType))
-                    childDump = new DictionaryDump(keyType, valueType, propertyType);
+                    childDump = new DictionaryDump(keyType.GetActualType(), valueType.GetActualType(), propertyType);
                 else if (propertyType.IsCollection(out Type? elementType))
-                    childDump = new CollectionDump(elementType, propertyType);
+                    childDump = new CollectionDump(elementType.GetActualType(), propertyType);
                 else
                     childDump = new ObjectDump(propertyType);
 
@@ -87,7 +102,7 @@ internal sealed class DumpBuilder
                 collectionDump.Values.Add(new ValueDump(collectionDump.ElementType, null));
             else
             {
-                Type elementType = element.GetType();
+                Type elementType = element.GetType().GetActualType();
                 if (elementType.IsValue())
                     collectionDump.Values.Add(new ValueDump(elementType, element));
                 else

@@ -12,8 +12,14 @@ public static class Samples
         IsActive = true,
         Salary = 50000.50m,
         Breakup = new SalaryBreakup(40000m, 10000m),
+        SkillLevels = new Dictionary<string, int?>
+        {
+            ["C#"] = 10,
+            ["Azure"] = 8,
+            ["AWS"] = null,
+        },
         DistanceToOffice = "3km",
-        Scores = new Dictionary<string, int> { { "Math", 95 }, { "Science", 88 } },
+        Scores = new Dictionary<string, int> { ["Math"] = 95, ["Science"] = 88 },
         Spouse = Jane(),
     };
 

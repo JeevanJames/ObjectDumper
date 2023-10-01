@@ -63,6 +63,9 @@ public sealed class DictionaryDump : ContainerDump
     public IDictionary<Dump, Dump> Values { get; } = new Dictionary<Dump, Dump>();
 }
 
+/// <summary>
+///     Represents a dump of a value or <c>null</c>.
+/// </summary>
 [DebuggerDisplay("Value: {Type.Name,nq} = {Value}")]
 public sealed class ValueDump : Dump
 {

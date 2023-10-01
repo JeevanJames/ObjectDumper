@@ -6,6 +6,13 @@ namespace Jeevan.ObjectDumper;
 
 internal static class TypeExtensions
 {
+    /// <summary>
+    ///     Returns whether a type is a collection, i.e. it implements the <see cref="IEnumerable"/>
+    ///     or <see cref="IEnumerable{T}"/> interface.
+    /// </summary>
+    /// <param name="type">The type to check.</param>
+    /// <param name="elementType">The type of the collection element.</param>
+    /// <returns><c>True</c> if the type is a collection, otherwise <c>false</c>.</returns>
     internal static bool IsCollection(this Type type, [NotNullWhen(true)] out Type? elementType)
     {
         // Exclude strings, as they are considered value types.
@@ -17,6 +24,7 @@ internal static class TypeExtensions
 
         Type[] intfTypes = type.GetInterfaces();
 
+        // Check for IEnumerable<T>
         foreach (Type intfType in intfTypes)
         {
             if (intfType.IsGenericType && intfType.GetGenericTypeDefinition() == typeof(IEnumerable<>))
@@ -26,10 +34,29 @@ internal static class TypeExtensions
             }
         }
 
-        elementType = typeof(object);
-        return Array.Exists(intfTypes, t => typeof(IEnumerable).IsAssignableFrom(t));
+        // Check for IEnumerable
+        bool isCollection = Array.Exists(intfTypes, t => typeof(IEnumerable).IsAssignableFrom(t));
+        elementType = isCollection ? typeof(object) : null;
+        return isCollection;
     }
 
+    /// <summary>
+    ///     Returns whether a type is a dictionary.
+    /// </summary>
+    /// <param name="type">The type to check.</param>
+    /// <param name="keyType">The type of the dictionary key.</param>
+    /// <param name="valueType">The type of the dictionary value.</param>
+    /// <returns><c>True</c> if the type is a dictionary, otherwise <c>false</c>.</returns>
+    /// <remarks>
+    ///     Since <see cref="IDictionary{TKey,TValue}"/> does not inherit from <see cref="IDictionary"/>,
+    ///     the logic here is slightly different from the <see cref="IsCollection"/> method.
+    ///     <br/>
+    ///     The type is considered a dictionary if it implements the non-generic <see cref="IDictionary"/>
+    ///     interface. However, we still want to check whether it implements the generic interface
+    ///     so that we can properly assign the <paramref name="keyType"/> and <paramref name="valueType"/>
+    ///     parameters. If the generic type is not implemented, then the key and value types are
+    ///     <see cref="object"/>.
+    /// </remarks>
     internal static bool IsDictionary(this Type type, [NotNullWhen(true)] out Type? keyType,
         [NotNullWhen(true)] out Type? valueType)
     {
@@ -43,6 +70,8 @@ internal static class TypeExtensions
 
         foreach (Type intfType in intfTypes)
         {
+            // Check if the generic dictionary interface is implemented. If it is, we can assign the
+            // key and value types, but this is still not considered to be a dictionary.
             if (intfType.IsGenericType && intfType.GetGenericTypeDefinition() == typeof(IDictionary<,>))
             {
                 Type[] genericArguments = intfType.GetGenericArguments();
@@ -51,8 +80,11 @@ internal static class TypeExtensions
                 foundGeneric = true;
             }
 
+            // Check if non-generic IDictionary interface is implemented. If it is, then the type
+            // is a dictionary.
             foundDictionary = Array.Exists(intfTypes, t => typeof(IDictionary).IsAssignableFrom(t));
 
+            // We only exit the loop if both the generic and non-generic interfaces are implemented.
             if (foundGeneric && foundDictionary)
                 break;
         }
