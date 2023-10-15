@@ -4,6 +4,11 @@
         <name>Jeevan.ObjectDumper</name>
     </assembly>
     <members>
+        <member name="T:Jeevan.ObjectDumper.ValueDump">
+            <summary>
+                Represents a dump of a value or <c>null</c>.
+            </summary>
+        </member>
         <member name="T:Jeevan.ObjectDumper.DumpBuilder">
             <summary>
                 Main workhorse class that creates the full dump from the instance.
